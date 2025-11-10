@@ -40,7 +40,7 @@ namespace InventoryService.Controllers {
             return NoContent();
         }
 
-        // Endpoint usado por Faturamento para descontar saldo atomically
+        // Endpoint usado por Faturamento para descontar saldo
         [HttpPost("{id}/reserve")]
         public async Task<IActionResult> Reserve(int id, [FromQuery] int qty) {
            
