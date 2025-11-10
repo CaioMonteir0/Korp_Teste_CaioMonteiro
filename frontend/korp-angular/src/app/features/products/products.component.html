@@ -1,0 +1,14 @@
+<h2>Produtos</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()" class="product-form">
+  <input formControlName="code" placeholder="Código" />
+  <input formControlName="description" placeholder="Descrição" />
+  <input formControlName="balance" type="number" placeholder="Saldo" />
+  <button type="submit">Salvar</button>
+</form>
+
+<ul>
+  <li *ngFor="let p of products">
+    <b>{{p.code}}</b> - {{p.description}} ({{p.balance}})
+  </li>
+</ul>

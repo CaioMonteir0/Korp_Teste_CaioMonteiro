@@ -1,0 +1,29 @@
+<h2>Notas Fiscais</h2>
+
+<div class="invoice-create">
+  <label>Produto</label>
+  <select [(ngModel)]="selectedProductId">
+    <option *ngFor="let p of products" [value]="p.id">
+      {{p.description}} ({{p.balance}})
+    </option>
+  </select>
+
+  <input type="number" [(ngModel)]="selectedQty" min="1" placeholder="Qtd" />
+  <button (click)="addItem()">Adicionar</button>
+
+  <ul>
+    <li *ngFor="let it of items">{{it.productId}} x {{it.quantity}}</li>
+  </ul>
+
+  <button (click)="createInvoice()">Criar Nota</button>
+</div>
+
+<h3>Notas Fiscais Emitidas</h3>
+<ul>
+  <li *ngFor="let inv of invoices">
+    #{{inv.sequentialNumber}} - {{inv.status}}
+    <button (click)="printInvoice(inv)" [disabled]="inv.status !== 'Aberta'">
+      Imprimir
+    </button>
+  </li>
+</ul>
