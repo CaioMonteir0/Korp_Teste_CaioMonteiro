@@ -6,7 +6,7 @@ echo ============================================
 
 :: Caminho do backend
 
-cd /d "%~dp0..\backend"
+cd /d "%~dp0backend"
 
 :: ---- Inventory Service ----
 echo.
