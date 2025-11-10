@@ -1,0 +1,21 @@
+# --- Dotnet ---
+bin/
+obj/
+*.db
+*.log
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.cache
+*.tmp
+
+# --- Node/Angular ---
+node_modules/
+dist/
+.angular/
+
+# --- Outros ---
+logs/
+.env

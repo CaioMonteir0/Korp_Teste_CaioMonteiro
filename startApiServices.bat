@@ -11,12 +11,12 @@ cd /d "%~dp0backend"
 :: ---- Inventory Service ----
 echo.
 echo [1/2] Iniciando Inventory Service na porta 5100...
-start cmd /k "cd InventoryService && dotnet run"
+start cmd /k "cd InventoryService && dotnet build && dotnet run"
 
 :: ---- Billing Service ----
 echo.
 echo [2/2] Iniciando Billing Service na porta 5200...
-start cmd /k "cd BillingService && dotnet run"
+start cmd /k "cd BillingService && dotnet build && dotnet run"
 
 echo.
 echo Todos os servicos foram iniciados em janelas separadas!
