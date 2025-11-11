@@ -21,3 +21,4 @@ dist/
 # --- Outros ---
 logs/
 .env
+*.sln

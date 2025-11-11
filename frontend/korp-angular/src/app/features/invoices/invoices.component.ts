@@ -48,6 +48,17 @@ export class InvoicesComponent implements OnInit {
   this.items.splice(index, 1);
   }
 
+  getProductCode(productId: number): string {
+  const product = this.products.find(p => p.id === productId);
+  return product ? product.code : `#${productId}`;
+}
+
+getProductDescription(productId: number): string {
+  const product = this.products.find(p => p.id === productId);
+  return product ? product.description : '';
+}
+
+
   createInvoice() {
     const inv: Invoice = { items: this.items };
     this.iSvc.create(inv).subscribe(() => {

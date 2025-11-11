@@ -4,7 +4,7 @@
 
 h2 {
   font-weight: 600;
-  color: #004a99;
+  color: #0a4275;
 }
 
 .card {
@@ -53,4 +53,9 @@ button i {
 
 .text-muted {
   font-size: 0.9rem;
+}
+
+.bi.bi-trash:hover {
+  color: red;
+ 
 }

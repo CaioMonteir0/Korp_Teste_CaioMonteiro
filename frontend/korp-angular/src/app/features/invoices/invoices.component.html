@@ -1,18 +1,18 @@
 <div class="container py-4">
-  <h2 class="text-primary fw-bold mb-4">
+  <h2 class="text-color fw-bold mb-4" style="color: #0a4275;">
     <i class="bi bi-receipt-cutoff me-2"></i>Notas Fiscais
   </h2>
 
   <!-- EMISSÃO DE NOVA NOTA -->
   <div class="card shadow-sm border-0 mb-5">
-    <div class="card-header bg-primary text-white fw-semibold">
+    <div class="card-header bg-color text-white fw-semibold" style="background-color: #0a4275;">
       Emitir Nova Nota Fiscal
     </div>
     <div class="card-body">
       <form class="row gy-3 gx-3 align-items-end">
         <div class="col-md-6">
           <label class="form-label fw-semibold">Produto</label>
-          <select [(ngModel)]="selectedProductId" class="form-select form-select-sm">
+          <select [(ngModel)]="selectedProductId" name="productId" class="form-select form-select-sm">
             <option value="" disabled selected>Selecione um produto</option>
             <option *ngFor="let p of products" [value]="p.id">
               {{ p.description }} ({{ p.balance }})
@@ -22,21 +22,12 @@
 
         <div class="col-md-3">
           <label class="form-label fw-semibold">Quantidade</label>
-          <input
-            type="number"
-            [(ngModel)]="selectedQty"
-            min="1"
-            class="form-control form-control-sm"
-            placeholder="Qtd"
-          />
+          <input type="number" [(ngModel)]="selectedQty" name="quantity" min="1" class="form-control form-control-sm"
+            placeholder="Qtd" />
         </div>
 
         <div class="col-md-3 text-end">
-          <button
-            type="button"
-            class="btn btn-success btn-sm px-3"
-            (click)="addItem()"
-          >
+          <button type="button" class="btn btn-success btn-sm px-3" (click)="addItem()">
             <i class="bi bi-plus-lg"></i> Adicionar
           </button>
         </div>
@@ -55,11 +46,21 @@
           </thead>
           <tbody>
             <tr *ngFor="let it of items; let i = index">
-              <td>{{ it.productId }}</td>
+              <td>
+                {{ getProductCode(it.productId) }} - {{ getProductDescription(it.productId) }}
+              </td>
+
               <td>{{ it.quantity }}</td>
               <td class="text-end">
-                <button class="btn btn-sm btn-outline-danger" (click)="removeItem(i)">
-                  <i class="bi bi-trash"></i>
+                <button class="btn btn-sm" (click)="removeItem(i)" title="Remover item">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-trash"
+                    viewBox="0 0 16 16">
+                    <path
+                      d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                    <path
+                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                  </svg>
+
                 </button>
               </td>
             </tr>
@@ -67,10 +68,7 @@
         </table>
 
         <div class="text-end mt-3">
-          <button
-            class="btn btn-primary px-4"
-            (click)="createInvoice()"
-          >
+          <button class="btn btn-primary px-4" (click)="createInvoice()">
             <i class="bi bi-file-earmark-plus"></i> Criar Nota Fiscal
           </button>
         </div>
@@ -100,22 +98,16 @@
           <tr *ngFor="let inv of invoices">
             <td class="fw-semibold">{{ inv.sequentialNumber }}</td>
             <td>
-              <span
-                class="badge rounded-pill px-3"
-                [ngClass]="{
+              <span class="badge rounded-pill px-3" [ngClass]="{
                   'bg-success': inv.status === 'Aberta',
                   'bg-secondary': inv.status !== 'Aberta'
-                }"
-              >
+                }">
                 {{ inv.status }}
               </span>
             </td>
             <td class="text-end">
-              <button
-                class="btn btn-sm btn-outline-primary me-2"
-                (click)="printInvoice(inv)"
-                [disabled]="inv.status !== 'Aberta'"
-              >
+              <button class="btn btn-sm btn-outline-primary me-2" (click)="printInvoice(inv)"
+                [disabled]="inv.status !== 'Aberta'">
                 <i class="bi bi-printer"></i> Imprimir
               </button>
               <span *ngIf="printingId === inv.id" class="text-muted small">
