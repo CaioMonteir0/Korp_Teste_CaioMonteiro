@@ -15,3 +15,35 @@
     cursor: pointer;
   }
 }
+
+.product-table {
+  display: table;
+  margin-top: 4rem;
+  width: 50%;
+  justify-self: center;
+  border-collapse: collapse;
+  box-shadow: 12px 10px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  border-style: hidden;
+  
+
+  th, td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+
+  th {
+    background-color: #0a4275;
+    color: #fff;
+  }
+
+  tr:hover {
+    background-color: #f2f2f2;
+  }
+}
+
+.empty-message {
+  color: #777;
+  font-style: italic;
+}
