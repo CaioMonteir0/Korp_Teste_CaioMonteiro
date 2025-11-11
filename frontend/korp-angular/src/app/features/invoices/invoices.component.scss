@@ -1,0 +1,56 @@
+.container {
+  max-width: 900px;
+}
+
+h2 {
+  font-weight: 600;
+  color: #004a99;
+}
+
+.card {
+  border-radius: 0.6rem;
+}
+
+.card-header {
+  font-size: 1rem;
+}
+
+.table {
+  font-size: 0.95rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.table th {
+  font-weight: 600;
+}
+
+button i {
+  margin-right: 4px;
+}
+
+.btn {
+  border-radius: 6px;
+}
+
+.btn-success {
+  background-color: #198754;
+  border: none;
+}
+
+.btn-success:hover {
+  background-color: #157347;
+}
+
+.btn-primary {
+  background-color: #0a4275;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #0a4275;
+}
+
+.text-muted {
+  font-size: 0.9rem;
+}

@@ -10,36 +10,9 @@ import { Product } from '../../core/models/product.model';
 @Component({
   selector: 'app-invoices',
   standalone: true,
-  imports: [CommonModule, FormsModule], 
-  template: `
-    <h2>Notas Fiscais</h2>
-
-    <div>
-      <label>Produto</label>
-      <select [(ngModel)]="selectedProductId">
-        <option *ngFor="let p of products" [value]="p.id">
-          {{p.description}} ({{p.balance}})
-        </option>
-      </select>
-      <input type="number" [(ngModel)]="selectedQty" min="1">
-      <button (click)="addItem()">Adicionar</button>
-    </div>
-
-    <ul>
-      <li *ngFor="let it of items">{{it.productId}} x {{it.quantity}}</li>
-    </ul>
-
-    <button (click)="createInvoice()">Criar Nota</button>
-
-    <h3>Notas</h3>
-    <ul>
-      <li *ngFor="let inv of invoices">
-        #{{inv.sequentialNumber}} - {{inv.status}}
-        <button (click)="printInvoice(inv)" [disabled]="inv.status!=='Aberta'">Imprimir</button>
-        <span *ngIf="printingId===inv.id">⏳ Imprimindo...</span>
-      </li>
-    </ul>
-  `
+  imports: [CommonModule, FormsModule],
+  templateUrl: './invoices.component.html',
+  styleUrls: ['./invoices.component.scss']
 })
 export class InvoicesComponent implements OnInit {
   products: Product[] = [];
@@ -67,6 +40,12 @@ export class InvoicesComponent implements OnInit {
   addItem() {
     if (!this.selectedProductId) return;
     this.items.push({ productId: +this.selectedProductId, quantity: this.selectedQty });
+  }
+
+  removeItem(index: number) {
+  const confirmDelete = confirm('Deseja remover este item da nota?');
+  if (!confirmDelete) return;
+  this.items.splice(index, 1);
   }
 
   createInvoice() {

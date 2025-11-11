@@ -4,26 +4,25 @@ import { Router } from '@angular/router';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
-  private encryptedToken: string = '';
 
   constructor(private router: Router) {}
 
   login(username: string, password: string): boolean {
     // Simulação simples de login
-    if (username === 'admin' && password === '1234') {
-      this.encryptedToken = btoa(`${this.TOKEN_KEY}:${username}:${password}`);
-      localStorage.setItem(this.encryptedToken, 'fake-jwt-token');
+    if (username === 'KorpNF' && password === '1234') {
+      const encryptedToken = btoa(`${username}:${password}`);
+      localStorage.setItem(this.TOKEN_KEY, encryptedToken);
       return true;
     }
     return false;
   }
 
   logout() {
-    localStorage.removeItem(this.encryptedToken);
+    localStorage.removeItem(this.TOKEN_KEY);
     this.router.navigate(['/login']);
   }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem(this.encryptedToken);
+    return !!localStorage.getItem(this.TOKEN_KEY);
   }
 }

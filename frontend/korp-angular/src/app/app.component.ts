@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from './core/auth/auth.service';
 import { LogoutButtonComponent } from '../app/shared/loggon-button/logout-button.component';
 
@@ -15,14 +15,18 @@ import { LogoutButtonComponent } from '../app/shared/loggon-button/logout-button
     LogoutButtonComponent
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   title = 'korp-angular';
 
-  constructor(private auth: AuthService) {}
+  constructor(public router: Router, private auth: AuthService) {}
 
-  isLoggedIn() {
+  isLoggedIn(): boolean {
     return this.auth.isAuthenticated();
+  }
+
+  isLoginPage(): boolean {
+    return this.router.url === '/login';
   }
 }

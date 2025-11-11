@@ -1,29 +1,134 @@
-<h2>Notas Fiscais</h2>
+<div class="container py-4">
+  <h2 class="text-primary fw-bold mb-4">
+    <i class="bi bi-receipt-cutoff me-2"></i>Notas Fiscais
+  </h2>
 
-<div class="invoice-create">
-  <label>Produto</label>
-  <select [(ngModel)]="selectedProductId" class="form-select">
-    <option *ngFor="let p of products" [value]="p.id">
-      {{p.description}} ({{p.balance}})
-    </option>
-  </select>
+  <!-- EMISSÃO DE NOVA NOTA -->
+  <div class="card shadow-sm border-0 mb-5">
+    <div class="card-header bg-primary text-white fw-semibold">
+      Emitir Nova Nota Fiscal
+    </div>
+    <div class="card-body">
+      <form class="row gy-3 gx-3 align-items-end">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Produto</label>
+          <select [(ngModel)]="selectedProductId" class="form-select form-select-sm">
+            <option value="" disabled selected>Selecione um produto</option>
+            <option *ngFor="let p of products" [value]="p.id">
+              {{ p.description }} ({{ p.balance }})
+            </option>
+          </select>
+        </div>
 
-  <input type="number" [(ngModel)]="selectedQty" min="1" placeholder="Qtd" />
-  <button (click)="addItem()">Adicionar</button>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Quantidade</label>
+          <input
+            type="number"
+            [(ngModel)]="selectedQty"
+            min="1"
+            class="form-control form-control-sm"
+            placeholder="Qtd"
+          />
+        </div>
 
-  <ul>
-    <li *ngFor="let it of items">{{it.productId}} x {{it.quantity}}</li>
-  </ul>
+        <div class="col-md-3 text-end">
+          <button
+            type="button"
+            class="btn btn-success btn-sm px-3"
+            (click)="addItem()"
+          >
+            <i class="bi bi-plus-lg"></i> Adicionar
+          </button>
+        </div>
+      </form>
 
-  <button (click)="createInvoice()">Criar Nota</button>
+      <!-- TABELA DE ITENS ADICIONADOS -->
+      <div *ngIf="items.length > 0" class="mt-4">
+        <h6 class="fw-semibold text-secondary">Itens da Nota</h6>
+        <table class="table table-sm table-striped align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Código</th>
+              <th>Quantidade</th>
+              <th class="text-end">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let it of items; let i = index">
+              <td>{{ it.productId }}</td>
+              <td>{{ it.quantity }}</td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-danger" (click)="removeItem(i)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="text-end mt-3">
+          <button
+            class="btn btn-primary px-4"
+            (click)="createInvoice()"
+          >
+            <i class="bi bi-file-earmark-plus"></i> Criar Nota Fiscal
+          </button>
+        </div>
+      </div>
+
+      <p *ngIf="!items.length" class="text-muted small mt-3 mb-0">
+        Nenhum item adicionado ainda.
+      </p>
+    </div>
+  </div>
+
+  <!-- LISTAGEM DE NOTAS -->
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-dark text-white fw-semibold">
+      Notas Fiscais Emitidas
+    </div>
+    <div class="card-body">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Status</th>
+            <th class="text-end">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let inv of invoices">
+            <td class="fw-semibold">{{ inv.sequentialNumber }}</td>
+            <td>
+              <span
+                class="badge rounded-pill px-3"
+                [ngClass]="{
+                  'bg-success': inv.status === 'Aberta',
+                  'bg-secondary': inv.status !== 'Aberta'
+                }"
+              >
+                {{ inv.status }}
+              </span>
+            </td>
+            <td class="text-end">
+              <button
+                class="btn btn-sm btn-outline-primary me-2"
+                (click)="printInvoice(inv)"
+                [disabled]="inv.status !== 'Aberta'"
+              >
+                <i class="bi bi-printer"></i> Imprimir
+              </button>
+              <span *ngIf="printingId === inv.id" class="text-muted small">
+                <i class="bi bi-hourglass-split"></i> Imprimindo...
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p *ngIf="!invoices.length" class="text-muted text-center mb-0">
+        Nenhuma nota fiscal emitida ainda.
+      </p>
+    </div>
+  </div>
 </div>
-
-<h3>Notas Fiscais Emitidas</h3>
-<ul>
-  <li *ngFor="let inv of invoices">
-    #{{inv.sequentialNumber}} - {{inv.status}}
-    <button (click)="printInvoice(inv)" [disabled]="inv.status !== 'Aberta'">
-      Imprimir
-    </button>
-  </li>
-</ul>
