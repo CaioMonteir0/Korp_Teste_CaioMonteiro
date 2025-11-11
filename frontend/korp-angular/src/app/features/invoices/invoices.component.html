@@ -2,7 +2,7 @@
 
 <div class="invoice-create">
   <label>Produto</label>
-  <select [(ngModel)]="selectedProductId">
+  <select [(ngModel)]="selectedProductId" class="form-select">
     <option *ngFor="let p of products" [value]="p.id">
       {{p.description}} ({{p.balance}})
     </option>
