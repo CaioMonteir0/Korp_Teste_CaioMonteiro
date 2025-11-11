@@ -2,6 +2,8 @@
 bin/
 obj/
 *.db
+.db-wal
+.db-shm
 *.log
 .vs/
 .vscode/

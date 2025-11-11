@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { InvoiceService, Invoice, InvoiceItem } from '../../core/services/invoice.service';
-import { ProductService, Product } from '../../core/services/product.service';
+import { InvoiceService} from '../../core/services/invoice.service';
+import { ProductService} from '../../core/services/product.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Invoice} from '../../core/models/invoice.model';
+import { InvoiceItem } from '../../core/models/invoice-item.model';
+import { Product } from '../../core/models/product.model';
 
 @Component({
   selector: 'app-invoices',

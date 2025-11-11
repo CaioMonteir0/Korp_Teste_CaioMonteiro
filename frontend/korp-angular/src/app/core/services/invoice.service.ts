@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
-
-export interface InvoiceItem { productId: number; quantity: number; }
-export interface Invoice { id?: number; sequentialNumber?: number; status?: string; items: InvoiceItem[]; }
+import { Invoice} from '../models/invoice.model';
 
 @Injectable({ providedIn: 'root' })
 export class InvoiceService {
