@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  margin-top: 4rem;
+  transform: translateY(60%);
 
   input {
     width: 200px;
@@ -17,8 +17,20 @@
     background-color: #0a4275;
     color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 12px;
     cursor: pointer;
+    width: min-content;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: medium;
+    
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
   }
 
   .error {
