@@ -116,6 +116,16 @@ docker compose down
 - Loader animado durante impressão e reprocessamento
 ---
 
+## 💢 Teste de Tratamento de Falhas
+
+ - Simule desligando o InventoryService e tentando imprimir uma nota:
+
+   - O BillingService tentará 3 vezes antes de registrar a falha.
+
+   - A nota será marcada com status “Falha”.
+
+   - Quando o serviço voltar, é possível reprocessar a nota clicando em “Reprocessar” no frontend.
+
 ## 🧩 Considerações Técnicas 
 - Os microsserviços usam SQLite local como banco.
 
