@@ -93,19 +93,20 @@
     <div class="card-body">
       <table class="table table-hover align-middle">
         <thead class="table-light">
-          <tr>
+          <tr style="background-color: white;">
             <th>#</th>
-            <th>Status</th>
-            <th class="text-end">Ações</th>
+            <th style="padding-left: 2.2rem;">Status</th>
+            <th class="text-end" style="padding-right: 2.2rem; position: relative;">Ações</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let inv of invoices">
             <td class="fw-semibold">{{ inv.sequentialNumber }}</td>
             <td>
-              <span class="badge rounded-pill px-3" [ngClass]="{
+                  <span style="width: 100px" class="badge rounded-pill px-3" [ngClass]="{
                   'bg-success': inv.status === 'Aberta',
-                  'bg-secondary': inv.status !== 'Aberta'
+                  'bg-secondary': inv.status !== 'Aberta',
+                  'bg-danger': inv.status === 'Falha'
                 }">
                 {{ inv.status }}
               </span>

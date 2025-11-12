@@ -52,7 +52,8 @@ public async Task<IActionResult> Print(int id)
         var ok = await _inv.ReserveAsync(item.ProductId, item.Quantity);
         if (!ok)
         {
-            
+            invoice.Status = "Falha";
+            _ctx.SaveChanges();
             return StatusCode(503, new { message = $"Falha ao reservar produto {item.ProductId}." });
         }
     }

@@ -42,7 +42,7 @@ public class ProductsController : ControllerBase
         _ctx.SaveChanges();
         return CreatedAtAction(nameof(GetAll), new { id = p.Id }, p);
     }
-
+    //desconto de saldo ao reservar
     [HttpPost("{id}/reserve")]
     public IActionResult Reserve(int id, [FromBody] JsonElement body)
     {
