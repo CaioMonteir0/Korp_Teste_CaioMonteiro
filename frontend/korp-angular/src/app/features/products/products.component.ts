@@ -14,6 +14,7 @@ import { Product } from '../../core/models/product.model';
 export class ProductsComponent implements OnInit {
   products: Product[] = [];
   form!: FormGroup;
+  errorMessage = '';
 
   constructor(private fb: FormBuilder, private svc: ProductService) {}
 
@@ -40,6 +41,20 @@ export class ProductsComponent implements OnInit {
     }
   }
 
+ removeProduct(index: number) {
+  const confirmDelete = confirm('Deseja remover este produto?');
+  if (!confirmDelete) return;
+  if (this.products[index]?.id) {
+  this.svc.delete(this.products[index].id).subscribe(() => {
+    this.products.splice(index, 1);
+  });
+} else {
+  
+  this.showErrorMessage("Produto não pode ser removido");
+}
+  this.load();
+}
+
   ngOnInit() {
     this.form = this.fb.group({
     code: ['', Validators.required],
@@ -61,5 +76,10 @@ export class ProductsComponent implements OnInit {
       this.load();
       this.form.reset({ balance: 0 });
     });
+  }
+
+  showErrorMessage(message: string) {
+    this.errorMessage = message;
+    setTimeout(() => this.errorMessage = '', 4000);
   }
 }

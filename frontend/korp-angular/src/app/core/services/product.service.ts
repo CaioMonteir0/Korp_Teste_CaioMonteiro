@@ -18,4 +18,8 @@ export class ProductService {
   create(p: Product): Observable<Product> {
     return this.http.post<Product>(this.base, p);
   }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.base}/${id}`);
+  }
 }

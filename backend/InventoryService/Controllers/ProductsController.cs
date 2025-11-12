@@ -81,5 +81,18 @@ public class ProductsController : ControllerBase
         return Ok(new { message = $"Produto {id} reservado com sucesso." });
     }
 
+    //remoção de produtos
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var product = _ctx.Products.FirstOrDefault(p => p.Id == id);
+        if (product == null)
+            return NotFound($"Produto {id} nao encontrado.");
+
+        _ctx.Remove(product);
+        _ctx.SaveChanges();
+        return NoContent();
+    }
+
 
 }

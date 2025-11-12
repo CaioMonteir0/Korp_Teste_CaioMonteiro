@@ -113,6 +113,7 @@ export class InvoicesComponent implements OnInit {
       error: (err) => {
         this.printingId = null;
         this.errorMessage = err.error?.message ?? 'Erro inesperado ao imprimir nota fiscal.';
+        setTimeout(() => this.errorMessage = '', 4000);
         this.loadInvoices(); // recarrega as notas
       }
     });

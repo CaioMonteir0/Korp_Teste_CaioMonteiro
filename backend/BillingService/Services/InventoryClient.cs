@@ -13,7 +13,7 @@ namespace BillingService.Services
         {
             _http = http;
             _retryPolicy = Policy.Handle<Exception>()
-                                 .WaitAndRetryAsync(3, attempt => TimeSpan.FromSeconds(1));
+                                 .WaitAndRetryAsync(3, attempt => TimeSpan.FromSeconds(0.3));
         }
 
         public async Task<bool> ReserveAsync(int productId, int qty)
