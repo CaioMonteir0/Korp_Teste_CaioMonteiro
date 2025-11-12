@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { InvoiceService} from '../../core/services/invoice.service';
-import { ProductService} from '../../core/services/product.service';
+import { InvoiceService } from '../../core/services/invoice.service';
+import { ProductService } from '../../core/services/product.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Invoice} from '../../core/models/invoice.model';
+import { Invoice } from '../../core/models/invoice.model';
 import { InvoiceItem } from '../../core/models/invoice-item.model';
 import { Product } from '../../core/models/product.model';
 
@@ -15,14 +15,15 @@ import { Product } from '../../core/models/product.model';
   styleUrls: ['./invoices.component.scss']
 })
 export class InvoicesComponent implements OnInit {
+  errorMessage: any;
   products: Product[] = [];
   invoices: Invoice[] = [];
   items: InvoiceItem[] = [];
   selectedProductId?: number;
   selectedQty = 1;
   printingId: number | null = null;
-
-  constructor(private pSvc: ProductService, private iSvc: InvoiceService) {}
+  
+  constructor(private pSvc: ProductService, private iSvc: InvoiceService) { }
 
   ngOnInit() {
     this.loadProducts();
@@ -39,24 +40,30 @@ export class InvoicesComponent implements OnInit {
 
   addItem() {
     if (!this.selectedProductId) return;
+    const balanceProductById = this.products.find(p => p.id === (this.selectedProductId != undefined ? +this.selectedProductId : 0))?.balance ?? 0;
+    if (this.selectedQty > balanceProductById) {
+      this.showErrorMessage('Quantidade solicitada maior que o saldo disponível do produto.');
+      return;
+    }
     this.items.push({ productId: +this.selectedProductId, quantity: this.selectedQty });
   }
 
+
   removeItem(index: number) {
-  const confirmDelete = confirm('Deseja remover este item da nota?');
-  if (!confirmDelete) return;
-  this.items.splice(index, 1);
+    const confirmDelete = confirm('Deseja remover este item da nota?');
+    if (!confirmDelete) return;
+    this.items.splice(index, 1);
   }
 
   getProductCode(productId: number): string {
-  const product = this.products.find(p => p.id === productId);
-  return product ? product.code : `#${productId}`;
-}
+    const product = this.products.find(p => p.id === productId);
+    return product ? product.code : `#${productId}`;
+  }
 
-getProductDescription(productId: number): string {
-  const product = this.products.find(p => p.id === productId);
-  return product ? product.description : '';
-}
+  getProductDescription(productId: number): string {
+    const product = this.products.find(p => p.id === productId);
+    return product ? product.description : '';
+  }
 
 
   createInvoice() {
@@ -70,16 +77,25 @@ getProductDescription(productId: number): string {
   printInvoice(inv: Invoice) {
     if (inv.status !== 'Aberta') return;
     this.printingId = inv.id!;
+    this.errorMessage = "";
+
     this.iSvc.print(inv.id!).subscribe({
       next: () => {
         this.printingId = null;
         this.loadInvoices();
         this.loadProducts();
       },
-      error: err => {
+      error: (err) => {
         this.printingId = null;
-        alert('Erro ao imprimir: ' + (err.error?.message ?? err.statusText));
+        this.errorMessage = err.error?.message ?? 'Erro inesperado ao imprimir nota fiscal.';
+        setTimeout(() => this.errorMessage = '', 4000);
       }
     });
   }
+
+  showErrorMessage(message: string) {
+    this.errorMessage = message;
+    setTimeout(() => this.errorMessage = '', 4000);
+  }
+
 }

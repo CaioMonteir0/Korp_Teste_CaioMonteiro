@@ -77,6 +77,11 @@
       <p *ngIf="!items.length" class="text-muted small mt-3 mb-0">
         Nenhum item adicionado ainda.
       </p>
+      <div *ngIf="errorMessage" class="alert alert-danger mt-3" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        {{ errorMessage }}
+      </div>
+
     </div>
   </div>
 

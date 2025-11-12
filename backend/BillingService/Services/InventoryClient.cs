@@ -23,13 +23,28 @@ namespace BillingService.Services
                 var response = await _retryPolicy.ExecuteAsync(() =>
                     _http.PostAsJsonAsync($"/api/products/{productId}/reserve", new { quantity = qty })
                 );
-                return response.IsSuccessStatusCode;
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"[Billing] Falha ao reservar produto {productId}: {error}");
+                    return false;
+                }
+
+                return true;
             }
-            catch
+            catch (HttpRequestException ex)
             {
+                Console.WriteLine($"[Billing] Erro de comunicação com InventoryService: {ex.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Billing] Erro inesperado: {ex.Message}");
                 return false;
             }
         }
+
 
     }
 }

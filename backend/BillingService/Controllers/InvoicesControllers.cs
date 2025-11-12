@@ -39,24 +39,28 @@ namespace BillingService.Controllers {
 
         
         [HttpPost("{id}/print")]
-        public async Task<IActionResult> Print(int id) {
-            var invoice = await _ctx.Invoices.Include(i=>i.Items).FirstOrDefaultAsync(i=>i.Id==id);
-            if(invoice == null) return NotFound();
-            if(invoice.Status != "Aberta") return BadRequest("Só é possível imprimir notas com status 'Aberta'.");
+public async Task<IActionResult> Print(int id)
+{
+    var invoice = _ctx.Invoices.Include(i => i.Items).FirstOrDefault(i => i.Id == id);
+    if (invoice == null) return NotFound();
 
-            
-            
-            foreach(var item in invoice.Items) {
-                var ok = await _inv.ReserveAsync(item.ProductId, item.Quantity);
-                if(!ok) {
-                    
-                    return StatusCode(503, new { message = $"Falha ao reservar produto {item.ProductId}" });
-                }
-            }
+    if (invoice.Status != "Aberta")
+        return BadRequest(new { message = "A nota já foi impressa." });
 
-            invoice.Status = "Fechada";
-            await _ctx.SaveChangesAsync();
-            return Ok(invoice);
+    foreach (var item in invoice.Items)
+    {
+        var ok = await _inv.ReserveAsync(item.ProductId, item.Quantity);
+        if (!ok)
+        {
+            
+            return StatusCode(503, new { message = $"Falha ao reservar produto {item.ProductId}." });
         }
+    }
+
+    invoice.Status = "Fechada";
+    _ctx.SaveChanges();
+    return Ok(new { message = "Nota fiscal impressa com sucesso." });
+}
+
     }
 }
