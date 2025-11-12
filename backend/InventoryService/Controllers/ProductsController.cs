@@ -19,7 +19,29 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll() => Ok(_ctx.Products.ToList());
+    public IActionResult GetAll([FromQuery] int? id)
+    {
+        // Verifica se o parâmetro 'id' foi fornecido na query string (ex: /api/products?id=1)
+        if (id.HasValue)
+        {
+            // Se o ID for fornecido, tenta encontrar o produto específico
+            var product = _ctx.Products.FirstOrDefault(p => p.Id == id.Value);
+
+            if (product == null)
+            {
+                
+                return NotFound($"Produto com ID {id.Value} não encontrado.");
+            }
+
+            // Retorna o produto individual
+            return Ok(product);
+        }
+        else
+        {
+            // Se nenhum ID for fornecido, retorna a lista completa de produtos 
+            return Ok(_ctx.Products.ToList());
+        }
+    }
 
     [HttpPost]
     public IActionResult Create(Product p)
@@ -33,11 +55,10 @@ public class ProductsController : ControllerBase
             existing.Description = p.Description;
             existing.Balance += p.Balance;
 
-            _ctx.SaveChanges();
+            _ctx.SaveChanges();    
             return Ok(existing);
         }
 
-        // Se não existir, cria novo
         _ctx.Products.Add(p);
         _ctx.SaveChanges();
         return CreatedAtAction(nameof(GetAll), new { id = p.Id }, p);
