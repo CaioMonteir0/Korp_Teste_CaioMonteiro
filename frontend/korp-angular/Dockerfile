@@ -1,28 +1,25 @@
 # ===============================
-# Etapa 1: Build Angular
+# Etapa 1: Build
 # ===============================
-FROM node:23 AS build
+FROM node:23
+
+# Define o diretório de trabalho
 WORKDIR /app
 
-# Copia tudo para dentro do container
+# Copia os arquivos de dependências
+COPY package*.json ./
+
+# Instala as dependências do projeto
+RUN npm install
+
+# Copia todo o código-fonte
 COPY . .
 
-# Substituir o environment padrão pelo de Docker
+# Substitui o environment padrão pelo de Docker
 RUN cp src/environments/environment.docker.ts src/environments/environment.ts
 
-# Instala dependências e gera o build
-RUN npm install
-RUN npm run build --prod
+# Expõe a porta padrão do Angular
+EXPOSE 4200
 
-# ===============================
-# Etapa 2: Servidor NGINX
-# ===============================
-FROM nginx:alpine
-COPY --from=build /app/dist/korp-angular/browser /usr/share/nginx/html
-
-# Copia a configuração customizada
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
-
+# Comando de inicialização com hot reload
+CMD ["npm", "run", "start", "--", "--host", "0.0.0.0"]

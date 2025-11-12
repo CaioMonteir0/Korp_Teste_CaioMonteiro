@@ -74,17 +74,32 @@ export class InvoicesComponent implements OnInit {
     });
   }
 
+  retryInvoice(inv: Invoice) {
+  this.iSvc.retry(inv.id!).subscribe({
+    next: () => {
+      alert('Nota reprocessada com sucesso!');
+      this.loadInvoices();
+    },
+    error: err => alert('Erro ao reprocessar: ' + (err.error?.message ?? err.statusText))
+  });
+}
+
+
   printInvoice(inv: Invoice) {
     if (inv.status !== 'Aberta') return;
     this.printingId = inv.id!;
     this.errorMessage = "";
 
     this.iSvc.print(inv.id!).subscribe({
+      //loading spinner delay
       next: () => {
-        this.printingId = null;
-        this.loadInvoices();
-        this.loadProducts();
-      },
+
+        setTimeout(() => {
+          this.printingId = null;
+          this.loadInvoices();
+          this.loadProducts();
+        }, 2000);
+    },
       error: (err) => {
         this.printingId = null;
         this.errorMessage = err.error?.message ?? 'Erro inesperado ao imprimir nota fiscal.';

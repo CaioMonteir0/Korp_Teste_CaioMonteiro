@@ -44,12 +44,19 @@ services:
       context: ./frontend/korp-angular
       dockerfile: Dockerfile
     ports:
-      - "4200:80"
+      - "4200:4200"
+    volumes:
+      - ./frontend/korp-angular:/app
+      - /app/node_modules
     depends_on:
       - billing
       - inventory
     networks:
       - korp-net
+    environment:
+      - CHOKIDAR_USEPOLLING=false
+      - NG_CLI_ANALYTICS=false
+
 
 # ===============================
 # REDE INTERNA
