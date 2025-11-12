@@ -81,7 +81,7 @@ export class InvoicesComponent implements OnInit {
     this.iSvc.retry(inv.id!).subscribe({
       next: () => {
         this.retryingId = null;
-        this.showErrorMessage('Nota reprocessada com sucesso!');
+        this.showSuccessMessage('Nota reprocessada com sucesso!');
         this.loadInvoices();
       },
       error: err => {
