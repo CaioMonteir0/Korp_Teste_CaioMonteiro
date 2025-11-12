@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  # ===============================
+  # INVENTORY SERVICE
+  # ===============================
+  inventory:
+    build:
+      context: .
+      dockerfile: backend/InventoryService/Dockerfile
+    ports:
+      - "5100:5100"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ./backend/InventoryService/inventory.db:/app/inventory.db
+    networks:
+      - korp-net
+
+  # ===============================
+  # BILLING SERVICE
+  # ===============================
+  billing:
+    build:
+      context: .
+      dockerfile: backend/BillingService/Dockerfile
+    ports:
+      - "5200:5200"
+    depends_on:
+      - inventory
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - INVENTORY_BASE_URL=http://inventory:5100
+    volumes:
+      - ./backend/BillingService/billing.db:/app/billing.db
+    networks:
+      - korp-net
+
+  # ===============================
+  # ANGULAR FRONTEND
+  # ===============================
+  frontend:
+    build:
+      context: ./frontend/korp-angular
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    depends_on:
+      - billing
+      - inventory
+    networks:
+      - korp-net
+
+# ===============================
+# REDE INTERNA
+# ===============================
+networks:
+  korp-net:
+    driver: bridge

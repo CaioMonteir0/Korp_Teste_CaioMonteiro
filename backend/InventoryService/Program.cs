@@ -35,11 +35,16 @@ using (var scope = app.Services.CreateScope())
 }
 
 
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+        c.RoutePrefix = "swagger"; // Abre o Swagger diretamente em /
+    });
+//}
+
 
 app.UseCors("AllowAngular");
 app.MapControllers();

@@ -13,11 +13,17 @@ builder.Services.AddDbContext<BillingContext>(opt =>
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // HttpClient configurado com URL do InventoryService
-var inventoryBaseUrl = builder.Configuration.GetSection("InventoryService")["BaseUrl"];
+// Primeiro tenta pegar do ambiente, depois do appsettings.json, e por fim usa localhost.
+var inventoryBaseUrl =
+    Environment.GetEnvironmentVariable("INVENTORY_BASE_URL") ??
+    builder.Configuration.GetSection("InventoryService")["BaseUrl"] ??
+    "http://localhost:5100";
+
 builder.Services.AddHttpClient<InventoryClient>(client =>
 {
-    client.BaseAddress = new Uri(inventoryBaseUrl ?? "http://localhost:5100");
+    client.BaseAddress = new Uri(inventoryBaseUrl);
 });
+
 
 // CORS para Angular
 builder.Services.AddCors(opt =>
@@ -33,11 +39,16 @@ using (var scope = app.Services.CreateScope())
     ctx.Database.EnsureCreated();
 }
 
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+        c.RoutePrefix = "swagger"; // Abre o Swagger diretamente em /
+    });
+//}
+
 
 app.UseCors("AllowAngular");
 app.MapControllers();
