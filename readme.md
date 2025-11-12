@@ -29,6 +29,7 @@ Os microsserviços se comunicam via **APIs REST**, com o `BillingService` consum
 Você pode rodar o sistema de **duas formas**:
 1. Via **scripts batch (modo local)**  
 2. Via **Docker Compose (modo containerizado)**
+3. **Manualmente, abrindo um terminal em cada diretório**
 
 ---
 
@@ -68,6 +69,27 @@ docker compose up --build
 **Parar os containers com :**
 
 docker compose down
+
+## 3. 🤖 Subindo o projeto manualmente
+### Frontend Angular
+- No diretório **./frontend/korp-angular**
+- **Digite os seguintes comandos no terminal:**
+
+      npm install
+
+      ng serve
+
+### API .NET (BillingService)
+- No diretório ./backend/BillingService
+- **Digite os seguintes comandos no terminal:**
+
+      dotnet build && dotnet run
+
+### API .NET (InventoryService)
+- No diretório ./backend/InventoryService
+- **Digite os seguintes comandos no terminal:**
+
+      dotnet build && dotnet run
 
 
 ## 🔑 Credenciais de Login
