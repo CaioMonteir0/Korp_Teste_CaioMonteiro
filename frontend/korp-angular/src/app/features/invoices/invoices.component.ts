@@ -16,6 +16,7 @@ import { Product } from '../../core/models/product.model';
 })
 export class InvoicesComponent implements OnInit {
   errorMessage: any;
+  successMessage: any;
   products: Product[] = [];
   invoices: Invoice[] = [];
   items: InvoiceItem[] = [];
@@ -77,7 +78,7 @@ export class InvoicesComponent implements OnInit {
   retryInvoice(inv: Invoice) {
   this.iSvc.retry(inv.id!).subscribe({
     next: () => {
-      alert('Nota reprocessada com sucesso!');
+      this.showErrorMessage('Nota reprocessada com sucesso!');
       this.loadInvoices();
     },
     error: err => alert('Erro ao reprocessar: ' + (err.error?.message ?? err.statusText))
@@ -91,7 +92,7 @@ export class InvoicesComponent implements OnInit {
     this.errorMessage = "";
 
     this.iSvc.print(inv.id!).subscribe({
-      //loading spinner delay
+      
       next: () => {
 
         setTimeout(() => {
@@ -99,6 +100,8 @@ export class InvoicesComponent implements OnInit {
           this.loadInvoices();
           this.loadProducts();
         }, 2000);
+
+        this.showSuccessMessage('Nota fiscal impressa com sucesso!');
     },
       error: (err) => {
         this.printingId = null;
@@ -111,6 +114,11 @@ export class InvoicesComponent implements OnInit {
   showErrorMessage(message: string) {
     this.errorMessage = message;
     setTimeout(() => this.errorMessage = '', 4000);
+  }
+
+  showSuccessMessage(message: string) {
+    this.successMessage = message;
+    setTimeout(() => this.successMessage = '', 4000);
   }
 
 }

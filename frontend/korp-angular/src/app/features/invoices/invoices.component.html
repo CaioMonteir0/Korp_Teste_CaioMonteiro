@@ -81,6 +81,10 @@
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
         {{ errorMessage }}
       </div>
+      <div *ngIf="successMessage" class="alert alert-success mt-3" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        {{ successMessage }}
+      </div>
 
     </div>
   </div>
@@ -135,7 +139,7 @@
       </table>
 
       <p *ngIf="!invoices.length" class="text-muted text-center mb-0">
-        Nenhuma nota fiscal emitida qainda.
+        Nenhuma nota fiscal emitida ainda.
       </p>
     </div>
   </div>
