@@ -6,11 +6,12 @@ import { CommonModule } from '@angular/common';
 import { Invoice } from '../../core/models/invoice.model';
 import { InvoiceItem } from '../../core/models/invoice-item.model';
 import { Product } from '../../core/models/product.model';
+import { ModalComponent } from '../../shared/modal/modal.component';
 
 @Component({
   selector: 'app-invoices',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ModalComponent],
   templateUrl: './invoices.component.html',
   styleUrls: ['./invoices.component.scss']
 })
@@ -24,6 +25,8 @@ export class InvoicesComponent implements OnInit {
   selectedQty = 1;
   printingId: number | null = null;
   retryingId: number | null = null;
+  isDeleteModalVisible: boolean = false;
+  itemIndexToRemove: number | null = null;
   
   constructor(private pSvc: ProductService, private iSvc: InvoiceService) { }
 
@@ -52,9 +55,25 @@ export class InvoicesComponent implements OnInit {
 
 
   removeItem(index: number) {
-    const confirmDelete = confirm('Deseja remover este item da nota?');
-    if (!confirmDelete) return;
-    this.items.splice(index, 1);
+    this.itemIndexToRemove = index;
+    
+    this.isDeleteModalVisible = true;
+    
+  }
+
+  handleDeleteConfirmation(confirmed: boolean) {
+    
+    this.isDeleteModalVisible = false;
+
+    
+    if (confirmed && this.itemIndexToRemove !== null) {
+      
+      this.items.splice(this.itemIndexToRemove, 1);
+      this.showSuccessMessage('Item removido da nota.');
+    } 
+    
+    // 4. Limpa o índice armazenado
+    this.itemIndexToRemove = null;
   }
 
   getProductCode(productId: number): string {

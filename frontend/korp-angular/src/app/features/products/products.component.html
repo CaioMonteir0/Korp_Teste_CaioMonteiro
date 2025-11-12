@@ -18,6 +18,12 @@
 
 <hr />
 
+<app-modal *ngIf="isDeleteModalVisible"
+  [title]="'Confirmação de Remoção'" 
+  [message]="'Deseja remover este da tabela de produtos?'"
+  (confirmed)="handleDeleteConfirmation($event)">
+</app-modal>
+
 <table class="product-table" *ngIf="products.length > 0; else empty">
   <thead>
     <tr>

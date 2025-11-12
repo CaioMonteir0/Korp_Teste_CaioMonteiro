@@ -3,11 +3,12 @@ import { ProductService} from '../../core/services/product.service';
 import { FormBuilder, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../core/models/product.model';
+import { ModalComponent } from '../../shared/modal/modal.component';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ModalComponent],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss'
 })
@@ -15,6 +16,9 @@ export class ProductsComponent implements OnInit {
   products: Product[] = [];
   form!: FormGroup;
   errorMessage = '';
+  successMessage = '';
+  isDeleteModalVisible: boolean = false;
+  itemIndexToRemove: number | null = null;
 
   constructor(private fb: FormBuilder, private svc: ProductService) {}
 
@@ -41,18 +45,43 @@ export class ProductsComponent implements OnInit {
     }
   }
 
- removeProduct(index: number) {
-  const confirmDelete = confirm('Deseja remover este produto?');
-  if (!confirmDelete) return;
-  if (this.products[index]?.id) {
-  this.svc.delete(this.products[index].id).subscribe(() => {
-    this.products.splice(index, 1);
-  });
-} else {
+  removeProduct(index: number) {
+    this.itemIndexToRemove = index;
+    this.isDeleteModalVisible = true;
+  }
+
+handleDeleteConfirmation(confirmed: boolean) {
+    
+    this.isDeleteModalVisible = false;
+    
   
-  this.showErrorMessage("Produto não pode ser removido");
-}
-  this.load();
+    if (confirmed && this.itemIndexToRemove !== null) {
+        
+        const index = this.itemIndexToRemove;
+
+        if (this.products[index]?.id) {
+            
+            
+            this.svc.delete(this.products[index].id).subscribe({
+                next: () => {
+                   
+                    this.products.splice(index, 1);
+                    this.showSuccessMessage("Produto removido com sucesso!");
+                    this.load(); 
+                },
+                error: (err) => {
+                    this.showErrorMessage("Erro ao remover produto: " + (err.error?.message ?? err.statusText));
+                    this.load(); 
+                }
+            });
+        } else {
+            this.showErrorMessage("Produto não pode ser removido (ID não encontrado).");
+        }
+    }
+    
+  
+    this.itemIndexToRemove = null;
+    
 }
 
   ngOnInit() {
@@ -82,4 +111,10 @@ export class ProductsComponent implements OnInit {
     this.errorMessage = message;
     setTimeout(() => this.errorMessage = '', 4000);
   }
+
+  showSuccessMessage(message: string) {
+    this.successMessage = message;
+    setTimeout(() => this.successMessage = '', 4000);
+  }
+
 }
