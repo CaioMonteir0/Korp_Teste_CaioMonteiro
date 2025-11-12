@@ -1,3 +1,8 @@
+h2{
+  font-weight: 600;
+  color: #0a4275;
+}
+
 .product-form {
   display: flex;
   gap: 0.5rem;
@@ -5,6 +10,9 @@
 
   input {
     padding: 0.4rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: small;
   }
 
   button {

@@ -1,11 +1,20 @@
-<h2>Produtos</h2>
+<h2 class="text-color fw-bold mb-4">Produtos</h2>
 
 <form [formGroup]="form" (ngSubmit)="save()" class="product-form">
-  <input formControlName="code" placeholder="Código" />
-  <input formControlName="description" placeholder="Descrição" />
-  <input formControlName="balance" type="number" placeholder="Saldo" title="Saldo"/>
+  <input formControlName="code" placeholder="Código" list="codes" (change)="onSelectCode()" />
+  <datalist id="codes">
+    <option *ngFor="let p of products" [value]="p.code">{{p.description}}</option>
+  </datalist>
+
+  <input formControlName="description" placeholder="Descrição" list="descriptions" (change)="onSelectDescription()" />
+  <datalist id="descriptions">
+    <option *ngFor="let p of products" [value]="p.description">{{p.code}}</option>
+  </datalist>
+
+  <input formControlName="balance" type="number" placeholder="Saldo" />
   <button type="submit">Salvar</button>
 </form>
+
 
 <hr />
 

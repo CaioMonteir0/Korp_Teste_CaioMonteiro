@@ -17,6 +17,29 @@ export class ProductsComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private svc: ProductService) {}
 
+
+  onSelectCode() {
+    const code = this.form.value.code;
+    const product = this.products.find(p => p.code === code);
+    if (product) {
+      this.form.patchValue({
+        description: product.description
+    
+      });
+    }
+  }
+
+  onSelectDescription() {
+    const desc = this.form.value.description;
+    const product = this.products.find(p => p.description === desc);
+    if (product) {
+      this.form.patchValue({
+        code: product.code
+        
+      });
+    }
+  }
+
   ngOnInit() {
     this.form = this.fb.group({
     code: ['', Validators.required],
