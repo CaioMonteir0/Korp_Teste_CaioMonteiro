@@ -57,11 +57,19 @@ namespace BillingService.Controllers
             {
                 var ok = await _inv.ReserveAsync(item.ProductId, item.Quantity);
                 if (!ok)
-                {
+                { 
+                    var productBalance = await _inv.GetBalance(item.ProductId);
+                    string productCode = await _inv.GetProductCode(item.ProductId);
+                    if( productBalance< item.Quantity)
+                    {
+                        invoice.Status = "Falha";
+                        _ctx.SaveChanges();
+                        return StatusCode(503, new { message = $"Estoque insuficiente para o produto {productCode}." });
+                    }
                     invoice.Status = "Falha";
                     _ctx.SaveChanges();
                     
-                    return StatusCode(503, new { message = $"Falha ao reservar produto. A aplicação pode estar fora do ar, tente novamente mais tarde." });
+                    return StatusCode(503, new { message = $"Falha ao reservar produto {productCode}. A aplicação pode estar fora do ar, tente novamente mais tarde." });
 
                 }
             }

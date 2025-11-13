@@ -45,6 +45,16 @@ namespace BillingService.Services
             }
         }
 
+        public async Task<int> GetBalance(int productId)
+        {
+            return await _http.GetFromJsonAsync<int>($"/api/products/{productId}/balance");
+        }
+        
+        public async Task<string> GetProductCode(int productId)
+        {
+            return await _http.GetStringAsync($"/api/products/{productId}/code");
+        }
+
 
     }
 }

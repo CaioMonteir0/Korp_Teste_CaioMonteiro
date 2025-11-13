@@ -29,7 +29,7 @@ public class ProductsController : ControllerBase
 
             if (product == null)
             {
-                
+
                 return NotFound($"Produto com ID {id.Value} não encontrado.");
             }
 
@@ -43,6 +43,22 @@ public class ProductsController : ControllerBase
         }
     }
 
+    //Quantidade em estoque de acordo com ID
+    [HttpGet("{id}/balance")]
+    public IActionResult GetBalance(int id)
+    {
+        var product = _ctx.Products.FirstOrDefault(p => p.Id == id);
+        return product == null ? NotFound($"Produto {id} nao encontrado.") : Ok(product.Balance);
+    }
+
+    //capturar código de produto pelo id
+    [HttpGet("{id}/code")]
+    public IActionResult GetCode(int id)
+    {
+       
+        var product = _ctx.Products.FirstOrDefault(p => p.Id == id);
+        return product == null ? NotFound($"Produto {id} nao encontrado.") : Ok(product.Code);
+    }
     [HttpPost]
     public IActionResult Create(Product p)
     {
