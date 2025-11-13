@@ -26,7 +26,7 @@ Os microsserviços se comunicam via **APIs REST**, com o `BillingService` consum
 
 ## 🚀 Como Executar o Projeto
 
-Você pode rodar o sistema de **duas formas**:
+Você pode rodar o sistema de **três formas**:
 1. Via **scripts batch (modo local)**  
 2. Via **Docker Compose (modo containerizado)**
 3. **Manualmente, abrindo um terminal em cada diretório**
