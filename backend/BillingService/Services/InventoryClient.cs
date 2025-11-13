@@ -16,32 +16,56 @@ namespace BillingService.Services
                                  .WaitAndRetryAsync(3, attempt => TimeSpan.FromSeconds(0.3));
         }
 
-        public async Task<bool> ReserveAsync(int productId, int qty)
+        public class OperationResult
+        {
+            public bool Success { get; set; }
+            public string Message { get; set; } = "";
+        }
+
+        public async Task<OperationResult> ReserveAsync(int productId, int qty)
         {
             try
             {
                 var response = await _retryPolicy.ExecuteAsync(() =>
                     _http.PostAsJsonAsync($"/api/products/{productId}/reserve", new { quantity = qty })
                 );
+                //captura cenário de produto não encontrado
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    return new OperationResult
+                    {
+                        Success = false,
+                        Message = $"O produto não existe mais no inventário."
+                    };
+                }
 
                 if (!response.IsSuccessStatusCode)
                 {
                     var error = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"[Billing] Falha ao reservar produto {productId}: {error}");
-                    return false;
+                    return new OperationResult
+                    {
+                        Success = false,
+                        Message = $"Falha ao reservar produto {productId}: {error}"
+                    };
                 }
 
-                return true;
+                return new OperationResult { Success = true };
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"[Billing] Erro de comunicação com InventoryService: {ex.Message}");
-                return false;
+                return new OperationResult
+                {
+                    Success = false,
+                    Message = $"Erro de comunicação com InventoryService: {ex.Message}"
+                };
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[Billing] Erro inesperado: {ex.Message}");
-                return false;
+                return new OperationResult
+                {
+                    Success = false,
+                    Message = $"Erro inesperado: {ex.Message}"
+                };
             }
         }
 

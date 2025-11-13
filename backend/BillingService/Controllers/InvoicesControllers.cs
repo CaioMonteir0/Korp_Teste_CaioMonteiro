@@ -56,7 +56,7 @@ namespace BillingService.Controllers
             foreach (var item in invoice.Items)
             {
                 var ok = await _inv.ReserveAsync(item.ProductId, item.Quantity);
-                if (!ok)
+                if (!ok.Success)
                 { 
                     var productBalance = await _inv.GetBalance(item.ProductId);
                     string productCode = await _inv.GetProductCode(item.ProductId);
@@ -89,12 +89,30 @@ namespace BillingService.Controllers
                 return BadRequest(new { message = "Somente notas com status 'Falha' podem ser reprocessadas." });
 
             foreach (var item in invoice.Items)
-            {
+            {   Console.WriteLine("------------------------------------------------------------------------------");
                 var ok = await _inv.ReserveAsync(item.ProductId, item.Quantity);
-                if (!ok)
+                var productBalance = await _inv.GetBalance(item.ProductId);
+                string productCode = await _inv.GetProductCode(item.ProductId);
+                if (!ok.Success)
                 {   
+                    invoice.Status = "Falha";
+                    _ctx.SaveChanges();
+
+                    if(ok.Message.Contains("não existe"))
+                    {
+                        return NotFound(new { message = $"Produto não encontrado em estoque. Tente novamente mais tarde." });
+                    }
                     
-                    return StatusCode(503, new { message = $"Ainda não foi possível reservar produto" });
+                    if(productBalance < item.Quantity)
+                    {
+                        invoice.Status = "Falha";
+                        _ctx.SaveChanges();
+                        return StatusCode(409, new { message = $"Estoque insuficiente para o produto {productCode}." });
+                    }else
+                    {
+                        return StatusCode(503, new { message = $"Ainda não foi possível reservar produto" });
+                    }
+                    
                 }
             }
 

@@ -105,7 +105,7 @@ export class InvoicesComponent implements OnInit {
       },
       error: err => {
         this.retryingId = null;
-        this.showErrorMessage('Erro ao reprocessar: ' + (err.error?.message ?? err.statusText));
+        this.showErrorMessage('Erro ao reprocessar: ' + (err.error?.message ?? "serviço indisponível ou produto fora de estoque"));
         this.loadInvoices();
       }
     });

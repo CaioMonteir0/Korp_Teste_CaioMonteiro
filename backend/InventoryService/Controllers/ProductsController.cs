@@ -48,7 +48,7 @@ public class ProductsController : ControllerBase
     public IActionResult GetBalance(int id)
     {
         var product = _ctx.Products.FirstOrDefault(p => p.Id == id);
-        return product == null ? NotFound($"Produto {id} nao encontrado.") : Ok(product.Balance);
+        return product == null ? StatusCode(503, new { message = $"Produto não encontrado ou indisponível." }) : Ok(product.Balance);
     }
 
     //capturar código de produto pelo id
@@ -57,7 +57,7 @@ public class ProductsController : ControllerBase
     {
        
         var product = _ctx.Products.FirstOrDefault(p => p.Id == id);
-        return product == null ? NotFound($"Produto {id} nao encontrado.") : Ok(product.Code);
+        return product == null ? StatusCode(503, new { message = $"Produto não encontrado ou indisponível." }) : Ok(product.Code);
     }
     [HttpPost]
     public IActionResult Create(Product p)
@@ -86,7 +86,7 @@ public class ProductsController : ControllerBase
         var qty = body.GetProperty("quantity").GetInt32();
         var product = _ctx.Products.FirstOrDefault(p => p.Id == id);
         if (product == null)
-            return NotFound($"Produto {id} não encontrado.");
+            return StatusCode(503, new { message = $"Produto não encontrado ou indisponível." });
 
         if (product.Balance < qty)
             return BadRequest($"Estoque insuficiente para o produto {id}.");

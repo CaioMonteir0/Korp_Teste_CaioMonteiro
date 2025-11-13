@@ -60,6 +60,17 @@ button i {
  
 }
 
+button .bi-card-list{
+  background-color: transparent;
+  border-color: transparent;
+
+}
+
+.btn.btn-md.btn-outline-primary{
+  --bs-btn-border-color: transparent;
+  margin-left: 1.6rem;
+}
+
 .alert {
   position: fixed;
   top: 30px;                
