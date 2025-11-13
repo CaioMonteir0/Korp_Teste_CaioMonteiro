@@ -1,0 +1,50 @@
+<div class="p-3">
+
+    <!-- Cabeçalho da nota -->
+    <h5 class="fw-bold text-primary mb-3">
+        Nota Fiscal #{{ invoice?.sequentialNumber }}
+        
+    </h5>
+
+    <!-- Status -->
+    <div class="status mb-3">
+        <h6>
+            <strong class="text-primary">Status:</strong>
+        </h6>
+
+        <span class="badge rounded-pill" [ngClass]="{
+        'bg-secondary': invoice?.status === 'Fechada',
+        'bg-success': invoice?.status === 'Aberta',
+        'bg-danger': invoice?.status === 'Falha'
+      }">
+            {{ invoice?.status }}
+        </span>
+    </div>
+
+    <!-- Tabela de produtos -->
+    <table class="table table-sm table-striped align-middle">
+        <thead class="table-light">
+            <tr>
+                
+                <th>Código do produto</th>
+                <th style="padding-right: 1.8rem;">Descrição</th>
+                <th>Quantidade</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of invoice?.items; let i = index">
+                
+                <td>{{ item?.code }}</td>
+                <td style="padding-left: 1.3rem;">{{ item?.description }}</td>
+                <td style="padding-left: 2.5rem">{{ item?.quantity }}</td>
+                
+
+            </tr>
+        </tbody>
+    </table>
+
+    <p *ngIf="!invoice?.items?.length" class="text-muted text-center mt-3">
+        Nenhum produto vinculado a esta nota.
+    </p>
+
+</div>

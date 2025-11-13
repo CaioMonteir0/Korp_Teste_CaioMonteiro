@@ -9,6 +9,17 @@
   (confirmed)="handleDeleteConfirmation($event)">
 </app-modal>
 
+<app-modal *ngIf="isModalReaderVisible" [title]="'Detalhes da Nota Fiscal'" [message]="modalMessage" (confirmed)="closeReader()"
+  (cancelled)="closeReader()" [data]="invoice" [bodyTemplate]="modalBodyTemplate" [showCancelButton]="false" [showConfirmButton]="false">
+  
+</app-modal>
+
+<ng-template #readerInvoiceTemplate let-invoice>
+    <app-modal-invoice-reader [invoice]="invoice" (confirmed)="closeReader()"></app-modal-invoice-reader>
+  </ng-template>
+
+
+
   <!-- EMISSÃO DE NOVA NOTA -->
   <div class="card shadow-sm border-0 mb-5">
     <div class="card-header bg-color text-white fw-semibold" style="background-color: #0a4275;">
@@ -123,7 +134,7 @@
               </span>
             </td>
             <td>
-              <button class="btn btn-md btn-outline-primary">
+              <button class="btn btn-md btn-outline-primary" (click)="openInvoiceDetails(inv)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-list"
                   viewBox="0 0 16 16">
                   <path
@@ -135,7 +146,7 @@
             </td>
             <td class="text-end">
               
-              <span *ngIf="printingId === inv.id || retryingId === inv.id" class="text-muted small me-2">
+              <span *ngIf="(printingId === inv.id || retryingId === inv.id) && !isModalReaderVisible" class="text-muted small me-2">
                 <i class="loader mr-4">
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                     class="bi bi-arrow-clockwise spin" viewBox="0 0 16 16">

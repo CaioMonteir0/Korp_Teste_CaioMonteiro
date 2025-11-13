@@ -103,7 +103,7 @@ handleDeleteConfirmation(confirmed: boolean) {
 
       this.svc.update(result.id, result).subscribe({
         next: () => {
-          console.log("result",result);
+          
           const index = this.products.findIndex(p => p.id === result.id);
           if (index > -1) {
             this.products[index] = result;

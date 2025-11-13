@@ -24,6 +24,8 @@ export class ModalComponent implements OnInit {
   
   @Output() confirmed = new EventEmitter<any>();
   
+  @Input() showCancelButton: boolean = true;
+  @Input() showConfirmButton: boolean = true;
 
 
   constructor() { }

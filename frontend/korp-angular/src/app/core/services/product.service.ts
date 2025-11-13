@@ -26,4 +26,13 @@ export class ProductService {
   update(id: number, p: Product): Observable<Product> {
     return this.http.put<Product>(`${this.base}/${id}`, p);
   }
+
+  getCode(productId: number): Observable<string>{
+  return this.http.get<string>(`${this.base}/${productId}/code`, { responseType: 'text' as 'json' });
+}
+
+  getProductById(id: number): Observable<Product> {
+    return this.http.get<Product>(`${this.base}?id=${id}`);
+  }
+
 }

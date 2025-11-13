@@ -19,9 +19,9 @@
                 <p *ngIf="!bodyTemplate && message">{{ message }}</p>
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
-                <button type="button" class="btn btn-primary" (click)="confirm()">Confirmar</button>
+            <div class="modal-footer" *ngIf="showCancelButton || showConfirmButton">
+                <button *ngIf="showCancelButton" type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
+                <button  *ngIf="showConfirmButton" type="button" class="btn btn-primary" (click)="confirm()">Confirmar</button>
             </div>
 
         </div>

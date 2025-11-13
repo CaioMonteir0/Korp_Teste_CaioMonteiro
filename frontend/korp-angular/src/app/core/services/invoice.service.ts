@@ -15,4 +15,8 @@ export class InvoiceService {
     return this.http.post(`${this.base}/${id}/retry`, {});
   }
 
+  getById(id: number){
+    return this.http.get<Invoice>(`${this.base}/${id}`);
+  }
+
 }

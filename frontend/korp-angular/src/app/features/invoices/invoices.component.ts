@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { InvoiceService } from '../../core/services/invoice.service';
 import { ProductService } from '../../core/services/product.service';
 import { FormsModule } from '@angular/forms';
@@ -7,11 +7,12 @@ import { Invoice } from '../../core/models/invoice.model';
 import { InvoiceItem } from '../../core/models/invoice-item.model';
 import { Product } from '../../core/models/product.model';
 import { ModalComponent } from '../../shared/modal/modal.component';
-
+import { ModalInvoiceReaderComponent } from '../../shared/modal-invoice-reader/modal-Invoice-reader.component';
+import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-invoices',
   standalone: true,
-  imports: [CommonModule, FormsModule, ModalComponent],
+  imports: [CommonModule, FormsModule, ModalComponent, ModalInvoiceReaderComponent],
   templateUrl: './invoices.component.html',
   styleUrls: ['./invoices.component.scss']
 })
@@ -27,7 +28,16 @@ export class InvoicesComponent implements OnInit {
   retryingId: number | null = null;
   isDeleteModalVisible: boolean = false;
   itemIndexToRemove: number | null = null;
-  
+  isModalReaderVisible: boolean = false;
+  selectedInvoice: Invoice | null = null;
+  invoice?: Invoice;
+  modalMessage: string = '';
+  modalBodyTemplate: TemplateRef<any> | null = null;
+
+
+  @ViewChild('readerInvoiceTemplate') readerInvoiceTemplate!: TemplateRef<any>;
+
+
   constructor(private pSvc: ProductService, private iSvc: InvoiceService) { }
 
   ngOnInit() {
@@ -56,25 +66,81 @@ export class InvoicesComponent implements OnInit {
 
   removeItem(index: number) {
     this.itemIndexToRemove = index;
-    
+
     this.isDeleteModalVisible = true;
-    
+
   }
 
   handleDeleteConfirmation(confirmed: boolean) {
-    
+
     this.isDeleteModalVisible = false;
 
-    
+
     if (confirmed && this.itemIndexToRemove !== null) {
-      
+
       this.items.splice(this.itemIndexToRemove, 1);
       this.showSuccessMessage('Item removido da nota.');
-    } 
-    
+    }
+
     // 4. Limpa o índice armazenado
     this.itemIndexToRemove = null;
   }
+
+  openInvoiceDetails(inv: Invoice) {
+    this.printingId = inv.id!;
+    this.modalMessage = '';
+    this.modalBodyTemplate = null;
+
+    this.iSvc.getById(inv.id!).subscribe({
+      next: (invoiceData) => {
+        const itemRequests = invoiceData.items.map(async item => {
+          try { //captura código do produto
+            const code = await firstValueFrom(this.pSvc.getCode(item.productId));
+            const product = await firstValueFrom(
+              this.pSvc.getProductById(item.productId)
+            );
+            return { ...item, description: product.description, code: code ?? `#${item.productId}` };
+          } catch {
+            
+            return { ...item, code: `#${item.productId}` };
+          }
+        });
+
+
+        Promise.all(itemRequests).then(itemsWithCodes => {
+          this.invoice = { ...invoiceData, items: itemsWithCodes };
+
+          const someError = itemsWithCodes.some(i => i.code?.startsWith('#'));
+          if (someError) {
+            this.modalMessage = 'O serviço pode estar indisponível, tente novamente mais tarde.';
+            this.modalBodyTemplate = null;
+            
+          } else {
+
+            this.modalBodyTemplate = this.readerInvoiceTemplate;
+          }
+          this.isModalReaderVisible = true; // abre modal genérico
+          this.printingId = null;
+        });
+      },
+      error: (err) => {
+        this.printingId = null;
+        this.modalBodyTemplate = null;
+        this.showErrorMessage('Erro ao carregar detalhes da nota fiscal.');
+        console.error(err);
+      }
+    });
+  }
+
+
+
+
+  closeReader() {
+    this.isModalReaderVisible = false;
+    this.selectedInvoice = null;
+  }
+
+
 
   getProductCode(productId: number): string {
     const product = this.products.find(p => p.id === productId);
@@ -118,7 +184,7 @@ export class InvoicesComponent implements OnInit {
     this.errorMessage = "";
 
     this.iSvc.print(inv.id!).subscribe({
-      
+
       next: () => {
 
         setTimeout(() => {
@@ -128,7 +194,7 @@ export class InvoicesComponent implements OnInit {
         }, 2000);
 
         this.showSuccessMessage('Nota fiscal impressa com sucesso!');
-    },
+      },
       error: (err) => {
         this.printingId = null;
         this.errorMessage = err.error?.message ?? 'Erro inesperado ao imprimir nota fiscal.';
