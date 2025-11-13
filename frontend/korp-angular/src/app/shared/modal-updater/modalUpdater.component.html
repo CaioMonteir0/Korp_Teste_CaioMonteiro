@@ -1,0 +1,42 @@
+<form #productForm="ngForm">
+  
+  <div class="mb-3">
+    <label for="productCode" class="form-label">Código</label>
+    <input 
+      type="text" 
+      class="form-control" 
+      id="productCode" 
+      name="code" 
+      [(ngModel)]="product!.code" 
+      required
+    >
+  </div>
+
+  <div class="mb-3">
+    <label for="productDescription" class="form-label">Descrição</label>
+    <input 
+      type="text" 
+      class="form-control" 
+      id="productDescription" 
+      name="description" 
+      [(ngModel)]="product!.description" 
+      required
+    >
+  </div>
+
+  <div class="mb-3">
+    <label for="productBalance" class="form-label">Saldo</label>
+    <input 
+      type="number" 
+      class="form-control" 
+      id="productBalance" 
+      name="balance" 
+      [(ngModel)]="product!.balance"
+      min="0"
+      required
+      disabled
+    >
+    <small class="form-text text-muted">O saldo não pode ser alterado diretamente.</small>
+  </div>
+  
+</form>

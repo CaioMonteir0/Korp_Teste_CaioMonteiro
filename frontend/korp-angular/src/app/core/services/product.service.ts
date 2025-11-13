@@ -22,4 +22,8 @@ export class ProductService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.base}/${id}`);
   }
+
+  update(id: number, p: Product): Observable<Product> {
+    return this.http.put<Product>(`${this.base}/${id}`, p);
+  }
 }

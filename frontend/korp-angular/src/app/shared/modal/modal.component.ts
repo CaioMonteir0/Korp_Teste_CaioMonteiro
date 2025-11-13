@@ -1,10 +1,12 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { ModalUpdaterComponent } from '../modal-updater/modalUpdater.component';
+import { FormsModule } from '@angular/forms';
+import { Product } from '../../core/models/product.model';
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, ModalUpdaterComponent],
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss']
 })
@@ -13,9 +15,16 @@ export class ModalComponent implements OnInit {
 
   @Input() title: string = 'Confirmação Necessária'; 
   @Input() message: string = 'Você tem certeza que deseja realizar esta ação?'; 
+  @Input() product: Product | undefined;
+ 
   
+  @Input() data: any; 
   
-  @Output() confirmed = new EventEmitter<boolean>();
+  @Input() bodyTemplate: TemplateRef<any> | null = null;
+  
+  @Output() confirmed = new EventEmitter<any>();
+  
+
 
   constructor() { }
 
@@ -25,7 +34,7 @@ export class ModalComponent implements OnInit {
   
   confirm(): void {
     
-    this.confirmed.emit(true);
+    this.confirmed.emit(this.data || true);
   }
 
   

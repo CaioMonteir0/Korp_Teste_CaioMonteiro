@@ -94,5 +94,21 @@ public class ProductsController : ControllerBase
         return NoContent();
     }
 
+    //edição de produtos
+    [HttpPut("{id}")]
+    public IActionResult Update(int id, [FromBody] Product p)
+    {
+        var product = _ctx.Products.FirstOrDefault(p => p.Id == id);
+        if (product == null)
+            return NotFound($"Produto {id} nao encontrado.");
+
+        product.Code = p.Code;
+        product.Description = p.Description;
+        product.Balance = p.Balance;
+
+        _ctx.SaveChanges();
+        return NoContent();
+    }
+
 
 }
