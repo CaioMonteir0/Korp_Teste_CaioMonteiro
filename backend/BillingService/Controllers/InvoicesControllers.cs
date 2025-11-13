@@ -47,37 +47,65 @@ namespace BillingService.Controllers
         [HttpPost("{id}/print")]
         public async Task<IActionResult> Print(int id)
         {
-            var invoice = _ctx.Invoices.Include(i => i.Items).FirstOrDefault(i => i.Id == id);
-            if (invoice == null) return NotFound();
+            var invoice = _ctx.Invoices
+                .Include(i => i.Items)
+                .FirstOrDefault(i => i.Id == id);
+
+            if (invoice == null)
+                return NotFound();
 
             if (invoice.Status != "Aberta")
                 return BadRequest(new { message = "A nota já foi impressa." });
 
             foreach (var item in invoice.Items)
             {
-                var ok = await _inv.ReserveAsync(item.ProductId, item.Quantity);
-                if (!ok.Success)
-                { 
-                    var productBalance = await _inv.GetBalance(item.ProductId);
-                    string productCode = await _inv.GetProductCode(item.ProductId);
-                    if( productBalance< item.Quantity)
-                    {
-                        invoice.Status = "Falha";
-                        _ctx.SaveChanges();
-                        return StatusCode(503, new { message = $"Estoque insuficiente para o produto {productCode}." });
-                    }
+
+                string? productCode = await _inv.GetProductCode(item.ProductId);
+
+                if (productCode == null)
+                {
                     invoice.Status = "Falha";
                     _ctx.SaveChanges();
-                    
-                    return StatusCode(503, new { message = $"Falha ao reservar produto {productCode}. A aplicação pode estar fora do ar, tente novamente mais tarde." });
 
+                    return StatusCode(503, new
+                    {
+                        message = $"O produto (ID {item.ProductId}) não existe mais no inventário."
+                    });
+                }
+
+
+                var ok = await _inv.ReserveAsync(item.ProductId, item.Quantity);
+
+                if (!ok.Success)
+                {
+
+                    var productBalance = await _inv.GetBalance(item.ProductId);
+
+                    invoice.Status = "Falha";
+                    _ctx.SaveChanges();
+
+                    if (productBalance < item.Quantity)
+                    {
+                        return StatusCode(503, new
+                        {
+                            message = $"Estoque insuficiente para o produto {productCode}."
+                        });
+                    }
+
+                    return StatusCode(503, new
+                    {
+                        message = $"Falha ao reservar produto {productCode}. O serviço de inventário pode estar fora do ar."
+                    });
                 }
             }
 
+
             invoice.Status = "Fechada";
             _ctx.SaveChanges();
+
             return Ok(new { message = "Nota fiscal impressa com sucesso." });
         }
+
 
         [HttpPost("{id}/retry")]
         public async Task<IActionResult> RetryPrint(int id)

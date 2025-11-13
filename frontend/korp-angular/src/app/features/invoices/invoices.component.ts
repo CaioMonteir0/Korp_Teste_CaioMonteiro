@@ -197,7 +197,8 @@ export class InvoicesComponent implements OnInit {
       },
       error: (err) => {
         this.printingId = null;
-        this.errorMessage = err.error?.message ?? 'Erro inesperado ao imprimir nota fiscal.';
+        
+        this.errorMessage = err.error?.message ?? 'Erro inesperado ao imprimir nota fiscal: Produto fora de estoque.';
         setTimeout(() => this.errorMessage = '', 4000);
         this.loadInvoices(); // recarrega as notas
       }

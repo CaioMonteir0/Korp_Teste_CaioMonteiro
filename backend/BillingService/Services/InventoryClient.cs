@@ -73,11 +73,27 @@ namespace BillingService.Services
         {
             return await _http.GetFromJsonAsync<int>($"/api/products/{productId}/balance");
         }
-        
-        public async Task<string> GetProductCode(int productId)
+
+        public async Task<string?> GetProductCode(int productId)
         {
-            return await _http.GetStringAsync($"/api/products/{productId}/code");
+            try
+            {
+                return await _retryPolicy.ExecuteAsync(async () =>
+                {
+                    var response = await _http.GetAsync($"/api/products/{productId}/code");
+
+                    if (!response.IsSuccessStatusCode)
+                        return null;
+
+                    return await response.Content.ReadAsStringAsync();
+                });
+            }
+            catch
+            {
+                return null;
+            }
         }
+
 
 
     }
